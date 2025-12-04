@@ -10,6 +10,7 @@
 #include "cpacman.h"
 #include "cghost.h"
 #include "czdc.h"
+#include "csettings.h"
 
 class CApp : public QObject
 {
@@ -25,6 +26,7 @@ private:
     QList<QThread *> _thGhosts;
     CGUI *_gui;
     CZDC *_zdc;
+    CSettings _settings;
 
 private slots:
     void on_destroyed();

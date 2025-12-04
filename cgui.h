@@ -9,6 +9,7 @@
 
 #include "commun.h"
 #include "czdc.h"
+#include "csettings.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class CGUI; }
@@ -28,9 +29,9 @@ private:
     QImage _maze;
     CZDC _zdc;
     virtual void keyPressEvent(QKeyEvent *e);
-    T_DIRECTION _dirMem; // mémorisation direction précédente
     int _wL, _hL;
     int _wW, _hW;
+    CSettings _settings;
 
 private slots:
     void on_timeout();

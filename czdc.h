@@ -4,6 +4,7 @@
 #include <QSharedMemory>
 #include <QObject>
 #include "commun.h"
+#include "csettings.h"
 
 #define MAX_GHOST 5
 
@@ -28,6 +29,7 @@ public:
 
 private:
     T_ZDC *_data;
+    CSettings _settings;
 
 signals:
     void sig_erreur(int err);
