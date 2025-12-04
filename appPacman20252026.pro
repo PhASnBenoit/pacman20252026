@@ -13,6 +13,7 @@ SOURCES += \
     cghost.cpp \
     cpacman.cpp \
     cpersonnage.cpp \
+    csettings.cpp \
     czdc.cpp \
     main.cpp \
     cgui.cpp
@@ -24,6 +25,7 @@ HEADERS += \
     commun.h \
     cpacman.h \
     cpersonnage.h \
+    csettings.h \
     czdc.h
 
 FORMS += \
@@ -33,3 +35,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    pacman.ini

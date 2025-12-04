@@ -17,7 +17,7 @@
    <widget class="QLabel" name="laPers">
     <property name="geometry">
      <rect>
-      <x>26</x>
+      <x>184</x>
       <y>23</y>
       <width>26</width>
       <height>23</height>
