@@ -3,19 +3,23 @@
 CApp::CApp(QObject *parent, int argc, char *argv[])
     : QObject{parent}
 {
+    // TODO INIT ZDC avec CSETTINGS
+    _zdc = new CZDC();
+    connect(_zdc, &CZDC::sig_erreur, this, &CApp::on_sig_erreurFromZDC);
+    if (_zdc->init())  // création de la ZDC
+        return;
+    _zdc->clear(); // RAZ
+    _zdc->setGeneral(_settings.getGeneral());
+    _zdc->setPacman(_settings.getPacman());
+    for(int i=0 ; i<_zdc->getGeneral().nbGhosts ; i++) {
+        _zdc->setGhostNb(i, _settings.getGhost(i));
+    }
+
     // IHM
     _gui = new CGUI();
     connect(_gui, &CGUI::destroyed, this, &CApp::on_destroyed);
     connect(this, &CApp::sig_erreurToGUI, _gui, &CGUI::on_erreur);
     _gui->show();
-
-    _zdc = new CZDC();
-    connect(_zdc, &CZDC::sig_erreur, this, &CApp::on_sig_erreurFromZDC);
-    _zdc->init();  // création de la ZDC
-    _zdc->clear(); // RAZ
-
-    // TODO INIT ZDC avec CSETTINGS
-
 
     // création et départ du pacman
     _pacman = new CPacman(nullptr); // TODO réglages par défaut
@@ -30,7 +34,7 @@ CApp::CApp(QObject *parent, int argc, char *argv[])
     // création et départ des fantomes
     CGhost *ghost;
     QThread *_thGhost;
-    for (int i=0 ; i<MAX_GHOST ; i++) {
+    for (int i=0 ; i<_zdc->getGeneral().nbGhosts ; i++) {
         ghost = new CGhost(nullptr);// TODO Réglage par défaut
         _ghosts.append(ghost);
         _thGhost = new QThread();

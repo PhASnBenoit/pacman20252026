@@ -26,7 +26,9 @@ int CZDC::init()
 
 void CZDC::clear()
 {
-    memset(_data, 0, sizeof(T_ZDC));
+    lock();
+        memset(_data, 0, sizeof(T_ZDC));
+    unlock();
 }
 
 T_PACMAN CZDC::getPacman()
@@ -42,7 +44,7 @@ T_GHOST CZDC::getGhostNb(int nb)
 {
     T_GHOST ghost;
     memset(&ghost, 0, sizeof(T_GHOST));
-    if ((nb<0) || (nb>=MAX_GHOST)) {
+    if ((nb<0) || (nb>=_data->general.nbGhosts)) {
         emit sig_erreur(-2);
         return ghost;
     } //
@@ -50,6 +52,15 @@ T_GHOST CZDC::getGhostNb(int nb)
         memcpy(&ghost, &_data->ghosts[nb], sizeof(T_GHOST));
     unlock();
     return ghost;
+}
+
+T_GENERAL CZDC::getGeneral()
+{
+    T_GENERAL gen;
+    lock();
+        memcpy(&gen, &_data->general, sizeof(T_GENERAL));
+    unlock();
+    return gen;
 }
 
 void CZDC::setPacman(T_PACMAN pac)
@@ -61,12 +72,19 @@ void CZDC::setPacman(T_PACMAN pac)
 
 void CZDC::setGhostNb(int nb, T_GHOST ghost)
 {
-    if ((nb<0) || (nb>=MAX_GHOST)) {
+    if ((nb<0) || (nb>=_data->general.nbGhosts)) {
         emit sig_erreur(-2);
         return;
     } //
     lock();
         memcpy(&_data->ghosts[nb], &ghost, sizeof(T_GHOST));
         unlock();
+}
+
+void CZDC::setGeneral(T_GENERAL gen)
+{
+    lock();
+        memcpy(&_data->general, &gen, sizeof(T_GENERAL));
+    unlock();
 }
 

@@ -4,14 +4,12 @@
 #include <QSharedMemory>
 #include <QObject>
 #include "commun.h"
-#include "csettings.h"
 
-#define MAX_GHOST 5
-
+#define MAX_GHOSTS 6
 typedef struct s_zdc {
-    int nb_ghosts;
+    T_GENERAL general;
     T_PACMAN pacman;
-    T_GHOST ghosts[MAX_GHOST];
+    T_GHOST ghosts[MAX_GHOSTS];
 } T_ZDC;
 
 class CZDC : public QSharedMemory
@@ -23,13 +21,14 @@ public:
     void clear();
     T_PACMAN getPacman();
     T_GHOST getGhostNb(int nb);
+    T_GENERAL getGeneral();
     void setPacman(T_PACMAN pac);
     void setGhostNb(int nb, T_GHOST ghost);
+    void setGeneral(T_GENERAL gen);
     int init();
 
 private:
     T_ZDC *_data;
-    CSettings _settings;
 
 signals:
     void sig_erreur(int err);

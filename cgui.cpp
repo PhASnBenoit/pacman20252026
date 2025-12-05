@@ -27,44 +27,10 @@ void CGUI::keyPressEvent(QKeyEvent *e)
 
 void CGUI::on_timeout()
 {
+    T_PACMAN pac = _zdc.getPacman();
 
+    ui->laPers->setGeometry(pac.x,pac.y, pac.w,pac.h);
 
-
-/*
-    // est ce que dirAsked est possible
-    if (possibleDirs & _dirAsked)
-        if (_dir != _dirAsked) {
-            _dirMem = _dir;
-            _dir = _dirAsked;
-        } // if
-    if (!(possibleDirs & _dir))
-        _dir = FIXE;
-    // avancer le pers
-    switch(_dir) {
-    case FIXE: break;
-    case DROITE:
-        if (_dir != _dirMem)
-            ui->laPers->setPixmap(QPixmap("super-mario-droite.png"));
-        x+=1;
-        if ( x >= (_wW-_wL))
-            x = 0;
-        break;
-    case GAUCHE:
-        if (_dir != _dirMem)
-            ui->laPers->setPixmap(QPixmap("super-mario-gauche.png"));
-        x-=1;
-        if (x == 0)
-            x = _wW-_wL;
-        break;
-    case HAUT:
-        y-=1;
-        break;
-    case BAS:
-        y+=1;
-        break;
-    }
-    ui->laPers->setGeometry(x,y,_wL,_hL);
-    */
 }
 
 void CGUI::on_erreur(QString txt)

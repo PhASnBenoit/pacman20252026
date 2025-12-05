@@ -4,6 +4,7 @@
 #include "cpersonnage.h"
 #include <QObject>
 #include <QKeyEvent>
+#include <QThread>
 
 class CPacman : public CPersonnage
 {
@@ -14,6 +15,7 @@ public:
 
 private:
     T_DIRECTION _dirAsked; // direction demandée
+    T_DIRECTION _dirMem;  // mémoire dir précédent
     std::atomic_bool _running; // thread safe
 
 public slots:
