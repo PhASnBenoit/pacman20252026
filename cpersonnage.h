@@ -6,7 +6,6 @@
 #include <QRgb>
 
 #include "commun.h"
-#include "czdc.h"
 
 class CPersonnage : public QObject
 {
@@ -14,13 +13,13 @@ class CPersonnage : public QObject
 public:
     explicit CPersonnage(QObject *parent = nullptr);
     ~CPersonnage();
-    int getDirs(T_PACMAN pac);
+    int getDirsP(T_PACMAN pac);
+    int getDirsG(T_GHOST ghost);
 
 protected:
     int _num;
     QImage _maze;
-    T_DIRECTION _dir; // direction effective
-    CZDC *_zdc;
+    E_DIRECTIONS _dir; // direction effective
 
 signals:
 

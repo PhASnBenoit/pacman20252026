@@ -5,26 +5,29 @@
 #include <QObject>
 #include <QKeyEvent>
 #include <QThread>
+#include <QDebug>
+#include "czdc.h"
 
 class CPacman : public CPersonnage
 {
     Q_OBJECT
 public:
     explicit CPacman(QObject *parent = nullptr);
+    ~CPacman();
     void stop();
 
 private:
-    T_DIRECTION _dirAsked; // direction demandée
-    T_DIRECTION _dirMem;  // mémoire dir précédent
+    E_DIRECTIONS _dirMem;  // mémoire dir précédent
     std::atomic_bool _running; // thread safe
+    CZDC *_zdc;
 
 public slots:
-    void on_sig_key(QKeyEvent *e);
     void on_go();
 
 signals:
     void sig_erreur(QString txt);
     void sig_finished();
+    void sig_refresh();
 };
 
 #endif // CPACMAN_H

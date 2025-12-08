@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QSettings>
-#include <QStringList>
 
 #include "commun.h"
 
@@ -11,10 +10,10 @@ class CSettings : public QSettings
 {
     Q_OBJECT
 public:
-    explicit CSettings(const QString &fileName = "pacman.ini", QObject *parent = nullptr);
+    explicit CSettings(const QString &fileName = "/home/philippe/devQt/appPacman20252026/pacman.ini", QObject *parent = nullptr);
     T_PACMAN getPacman();
     T_GHOST getGhost(int no);
-    T_GENERAL getGeneral();
+    T_JEU getJeu();
 };
 
 #endif // CSETTINGS_H

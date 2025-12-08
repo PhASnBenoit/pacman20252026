@@ -3,14 +3,13 @@
 CSettings::CSettings(const QString &fileName, QObject *parent)
     : QSettings(fileName, QSettings::IniFormat, parent)
 {
-
 }
 
 T_PACMAN CSettings::getPacman()
 {
     T_PACMAN pac;
-    pac.x = value("PACMAN/PACMAN_POS_DEP_X", 26).toInt();
-    pac.y = value("PACMAN/PACMAN_POS_DEP_Y", 23).toInt();
+    pac.x = value("PACMAN/PACMAN_POS_DEP_X", 0).toInt();
+    pac.y = value("PACMAN/PACMAN_POS_DEP_Y", 0).toInt();
     pac.w = value("PACMAN/PACMAN_WIDTH", 26).toInt();
     pac.h = value("PACMAN/PACMAN_HEIGHT", 23).toInt();
     memcpy(pac.image_droite, value("PACMAN/IMAGE_DROITE", "super-mario-droite.png").toString().toStdString().c_str(), sizeof(pac.image_droite));
@@ -21,24 +20,26 @@ T_PACMAN CSettings::getPacman()
 T_GHOST CSettings::getGhost(int no)
 {
     T_GHOST ghost;
-    if ( (no<1) || (no>6)) // TODO A améliorer
+    if ( (no<0) || (no>=MAX_GHOSTS)) // TODO A améliorer
         return ghost;
-    ghost.w = value("GHOST/GHOST_WITDH", 26).toInt();
-    ghost.h = value("GHOST/GHOST_HEIGHT", 23).toInt();
+    no++;
+    ghost.w = value("GHOSTS/GHOST_WITDH", 0).toInt();
+    ghost.h = value("GHOSTS/GHOST_HEIGHT", 0).toInt();
     QString name="GHOST"+QString::number(no)+"_";
-    ghost.x = value("GHOST/"+name+"POS_DEP_X", 184).toInt();
-    ghost.y = value("GHOST/"+name+"POS_DEP_Y", 23).toInt();
-    memcpy(ghost.image, value("GHOST/"+name+"IMAGE", "redGhost.png").toString().toStdString().c_str(), sizeof(ghost.image));
-    memcpy(ghost.image, value("GHOST/"+name+"COMPORTEMENT", "ALEATOIRE").toString().toStdString().c_str(), sizeof(ghost.comportement));
+    ghost.x = value("GHOSTS/"+name+"POS_DEP_X", 184).toInt();
+    ghost.y = value("GHOSTS/"+name+"POS_DEP_Y", 23).toInt();
+    memcpy(ghost.image, value("GHOSTS/"+name+"IMAGE", "redGhost.png").toString().toStdString().c_str(), sizeof(ghost.image));
+    memcpy(ghost.comportement, value("GHOSTS/"+name+"COMPORTEMENT", "ALEATOIRE").toString().toStdString().c_str(), sizeof(ghost.comportement));
+    ghost.num = no;
     return ghost;
 }
 
-T_GENERAL CSettings::getGeneral()
+T_JEU CSettings::getJeu()
 {
-    T_GENERAL gen;
-    gen.nbGhosts = value("GENERAL/NB_GHOSTS", 5).toInt();
-    gen.vitesse = value("GENERAL/VITESSE", 10).toInt();
-    gen.maze_w = value("GENERAL/MAZE_WIDTH", 492).toInt();
-    gen.maze_h = value("GENERAL/MAZE_HEIGHT", 345).toInt();
-    return gen;
+    T_JEU jeu;
+    jeu.nbGhosts = value("JEU/NB_GHOSTS", 0).toInt();
+    jeu.vitesse = value("JEU/VITESSE", 2000).toInt();
+    jeu.maze_w = value("JEU/MAZE_WIDTH", 0).toInt();
+    jeu.maze_h = value("JEU/MAZE_HEIGHT", 0).toInt();
+    return jeu;
 }

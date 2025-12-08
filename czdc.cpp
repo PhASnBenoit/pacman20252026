@@ -1,33 +1,52 @@
 #include "czdc.h"
 
-CZDC::CZDC()
+CZDC::CZDC() : QSharedMemory(KEY)
 {
     _data = nullptr;
 }
 
 CZDC::~CZDC() {
+    detach();
 }
 
-int CZDC::init()
+int CZDC::init(bool capp)
 {
     bool res, res2;
-    setKey(KEY);
-    res = create(sizeof(T_ZDC));
-    if (!res) { // soit déjà créé, soit plus de mem
+
+    if (capp) { // création
+        qDebug() << "CZDC::init: CAPP veut créer la ZDC";
+        while(attach())
+            detach();
+        res = create(sizeof(T_ZDC));
+        if (!res) { // soit déjà créé, soit plus de mem
+            qDebug() << "CZDC::init: création ZDC impossible !";
+            emit sig_erreur("CZDC::init création ZDC impossible !");
+            return -1;
+        } // if res
+        qDebug() << "CZDC::init: Récupération et raz ZDC !";
+        lock();
+            _data = (T_ZDC *) data();
+            std::memset(_data, 0, sizeof(T_ZDC));
+        unlock();
+    } else {  // ensuite...
         res2 = attach();
         if (!res2) {
-            emit sig_erreur(-1);
+            qDebug() << "CZDC::init: attach ZDC impossible !";
+            emit sig_erreur("CZDC::init attach impossible !");
             return -1;
-        } // if res2
-    } // if res
-    _data = (T_ZDC *) data();
+        } // if res
+        qDebug() << "CZDC::init: Récupération pointeur ZDC !";
+        lock();
+            _data = (T_ZDC *) data();
+        unlock();
+    } // else
     return 0;
 }
 
-void CZDC::clear()
+void CZDC::setDirAskedPacman(E_DIRECTIONS dir)
 {
     lock();
-        memset(_data, 0, sizeof(T_ZDC));
+        _data->pacman.dirAsked = dir;
     unlock();
 }
 
@@ -40,27 +59,27 @@ T_PACMAN CZDC::getPacman()
     return pac;
 }
 
-T_GHOST CZDC::getGhostNb(int nb)
+T_GHOST CZDC::getGhostNo(int no)
 {
     T_GHOST ghost;
     memset(&ghost, 0, sizeof(T_GHOST));
-    if ((nb<0) || (nb>=_data->general.nbGhosts)) {
-        emit sig_erreur(-2);
+    if ((no<0) || (no>=_data->jeu.nbGhosts)) {
+        emit sig_erreur("CZDC::getGhostNb Nb ghosts incompatible !");
         return ghost;
     } //
     lock();
-        memcpy(&ghost, &_data->ghosts[nb], sizeof(T_GHOST));
+        memcpy(&ghost, &_data->ghosts[no], sizeof(T_GHOST));
     unlock();
     return ghost;
 }
 
-T_GENERAL CZDC::getGeneral()
+T_JEU CZDC::getJeu()
 {
-    T_GENERAL gen;
+    T_JEU jeu;
     lock();
-        memcpy(&gen, &_data->general, sizeof(T_GENERAL));
+        memcpy(&jeu, &_data->jeu, sizeof(T_JEU));
     unlock();
-    return gen;
+    return jeu;
 }
 
 void CZDC::setPacman(T_PACMAN pac)
@@ -70,21 +89,21 @@ void CZDC::setPacman(T_PACMAN pac)
     unlock();
 }
 
-void CZDC::setGhostNb(int nb, T_GHOST ghost)
+void CZDC::setGhostNo(int no, T_GHOST ghost)
 {
-    if ((nb<0) || (nb>=_data->general.nbGhosts)) {
-        emit sig_erreur(-2);
+    if ((no<0) || (no>=_data->jeu.nbGhosts)) {
+        emit sig_erreur("CZDC::setGhostNb N° ghost incompatible !");
         return;
     } //
     lock();
-        memcpy(&_data->ghosts[nb], &ghost, sizeof(T_GHOST));
-        unlock();
+        memcpy(&_data->ghosts[no], &ghost, sizeof(T_GHOST));
+    unlock();
 }
 
-void CZDC::setGeneral(T_GENERAL gen)
+void CZDC::setJeu(T_JEU jeu)
 {
     lock();
-        memcpy(&_data->general, &gen, sizeof(T_GENERAL));
+        memcpy(&_data->jeu, &jeu, sizeof(T_JEU));
     unlock();
 }
 

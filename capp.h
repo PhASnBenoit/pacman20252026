@@ -5,6 +5,7 @@
 #include <QList>
 #include <QThread>
 #include <QCoreApplication>
+#include <QDebug>
 
 #include "cgui.h"
 #include "cpacman.h"
@@ -20,19 +21,20 @@ public:
     ~CApp();
 
 private:
+    CZDC *_zdc;
+    CSettings *_settings;
     CPacman *_pacman;
     QThread *_thPacman;
     QList<CGhost *> _ghosts;
     QList<QThread *> _thGhosts;
     CGUI *_gui;
-    CZDC *_zdc;
-    CSettings _settings;
-
+    void initZDCFromSettings();
+    
 private slots:
     void on_destroyed();
 
 public slots:
-    void on_sig_erreurFromZDC(int no);
+    void on_sig_erreurFromZDC(QString err);
 
 signals:
     void sig_erreurToGUI(QString txt);

@@ -6,10 +6,12 @@
 #include <QRandomGenerator>
 #include <QKeyEvent>
 #include <QImage>
+#include <QList>
+#include <QLabel>
+#include <QDebug>
 
 #include "commun.h"
 #include "czdc.h"
-#include "csettings.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class CGUI; }
@@ -20,18 +22,17 @@ class CGUI : public QMainWindow
     Q_OBJECT
 
 public:
-    CGUI(QWidget *parent = nullptr);
+    CGUI(CZDC *zdc = nullptr, QWidget *parent = nullptr);
     ~CGUI();
 
 private:
     Ui::CGUI *ui;
+    CZDC *_zdc;
     QTimer _timerFw;
     QImage _maze;
-    CZDC _zdc;
+    E_DIRECTIONS _dirMem;
+    QList<QLabel *> _laGhosts;
     virtual void keyPressEvent(QKeyEvent *e);
-    int _wL, _hL;
-    int _wW, _hW;
-    CSettings _settings;
 
 private slots:
     void on_timeout();

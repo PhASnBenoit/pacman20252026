@@ -1,28 +1,27 @@
 #include "capp.h"
-
+#include <QFile>
 CApp::CApp(QObject *parent, int argc, char *argv[])
     : QObject{parent}
 {
-    // TODO INIT ZDC avec CSETTINGS
+    qDebug() << "CApp::CApp: new CZDC";
     _zdc = new CZDC();
     connect(_zdc, &CZDC::sig_erreur, this, &CApp::on_sig_erreurFromZDC);
-    if (_zdc->init())  // création de la ZDC
-        return;
-    _zdc->clear(); // RAZ
-    _zdc->setGeneral(_settings.getGeneral());
-    _zdc->setPacman(_settings.getPacman());
-    for(int i=0 ; i<_zdc->getGeneral().nbGhosts ; i++) {
-        _zdc->setGhostNb(i, _settings.getGhost(i));
-    }
+    if (_zdc->init(true)) { // création de la ZDC
+        qDebug() << "CApp::CApp: Erreur ZDC";
+        qDebug() << "CApp::CApp: Fin du programme";
+        delete _zdc;
+        QCoreApplication::exit(-1);
+    } // if
+    initZDCFromSettings();
 
     // IHM
-    _gui = new CGUI();
+    _gui = new CGUI(_zdc);
     connect(_gui, &CGUI::destroyed, this, &CApp::on_destroyed);
     connect(this, &CApp::sig_erreurToGUI, _gui, &CGUI::on_erreur);
     _gui->show();
 
     // création et départ du pacman
-    _pacman = new CPacman(nullptr); // TODO réglages par défaut
+    _pacman = new CPacman(); // TODO réglages par défaut
     _thPacman = new QThread();
     _pacman->moveToThread(_thPacman);
     connect(_thPacman, &QThread::started, _pacman, &CPacman::on_go);
@@ -34,8 +33,8 @@ CApp::CApp(QObject *parent, int argc, char *argv[])
     // création et départ des fantomes
     CGhost *ghost;
     QThread *_thGhost;
-    for (int i=0 ; i<_zdc->getGeneral().nbGhosts ; i++) {
-        ghost = new CGhost(nullptr);// TODO Réglage par défaut
+    for (int i=0 ; i<_zdc->getJeu().nbGhosts ; i++) {
+        ghost = new CGhost(i);// TODO Réglage par défaut
         _ghosts.append(ghost);
         _thGhost = new QThread();
         ghost->moveToThread(_thGhost);
@@ -46,21 +45,32 @@ CApp::CApp(QObject *parent, int argc, char *argv[])
         connect(_thGhost, &QThread::finished, _thGhost, &QThread::deleteLater);
         _thGhost->start(); // TOP DEPART
     } // for
-
 }
 
 CApp::~CApp()
 {
+    qDebug() << "CApp::~CApp: Destructeur";
+
     for (int i=0 ; i<_ghosts.size() ; i++) {
         _ghosts[i]->stop();
-        _thGhosts[i]->wait(100);
-        delete _thGhosts[i];
     } // for
     _ghosts.clear();
     _thGhosts.clear();
     _pacman->stop();
-    _thPacman->wait(100);
-    delete _pacman;
+    delete _settings;
+    delete _zdc;
+}
+
+void CApp::initZDCFromSettings()
+{
+    T_JEU jeu;
+    _settings = new CSettings("/home/philippe/devQt/appPacman20252026/pacman.ini");
+    jeu = _settings->getJeu();
+    _zdc->setJeu(jeu);
+    _zdc->setPacman(_settings->getPacman());
+    for(int i=0 ; i<_zdc->getJeu().nbGhosts ; i++) {
+        _zdc->setGhostNo(i, _settings->getGhost(i));
+    } // for
 }
 
 void CApp::on_destroyed()
@@ -68,7 +78,7 @@ void CApp::on_destroyed()
     QCoreApplication::quit(); // arrêt de l'application
 }
 
-void CApp::on_sig_erreurFromZDC(int no)
+void CApp::on_sig_erreurFromZDC(QString err)
 {
-    emit sig_erreurToGUI("Impossible de créer la ZDC !");
+    emit sig_erreurToGUI(err);
 }

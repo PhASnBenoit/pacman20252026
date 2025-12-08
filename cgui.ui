@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>492</width>
-    <height>393</height>
+    <height>409</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>CGUI</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="laPers">
+   <widget class="QLabel" name="laPacman">
     <property name="geometry">
      <rect>
       <x>184</x>
@@ -53,7 +53,7 @@
     </property>
    </widget>
    <zorder>laMaze</zorder>
-   <zorder>laPers</zorder>
+   <zorder>laPacman</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

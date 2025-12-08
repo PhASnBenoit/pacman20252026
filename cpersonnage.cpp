@@ -10,10 +10,10 @@ CPersonnage::CPersonnage(QObject *parent)
 
 CPersonnage::~CPersonnage()
 {
-
+  //  delete _zdc;
 }
 
-int CPersonnage::getDirs(T_PACMAN pac)
+int CPersonnage::getDirsP(T_PACMAN pac)
 {
     QRgb p1, p2;
     int dirs = 0; // directions possibles
@@ -44,3 +44,33 @@ int CPersonnage::getDirs(T_PACMAN pac)
     return dirs;
 }
 
+int CPersonnage::getDirsG(T_GHOST ghost)
+{
+    QRgb p1, p2;
+    int dirs = 0; // directions possibles
+    // DROITE
+    p1 = _maze.pixel(ghost.x+ghost.w, ghost.y);
+    p2 = _maze.pixel(ghost.x+ghost.w, ghost.y+ghost.h-1);
+    if ((p1==0xFF000000) && (p2==0xFF000000)) {
+        dirs = DROITE;
+    } // if
+    // GAUCHE
+    p1 = _maze.pixel(ghost.x-1, ghost.y);
+    p2 = _maze.pixel(ghost.x-1, ghost.y+ghost.h-1);
+    if ((p1==0xFF000000) && (p2==0xFF000000)) {
+        dirs |= GAUCHE;
+    } // if
+    // HAUT
+    p1 = _maze.pixel(ghost.x, ghost.y-1);
+    p2 = _maze.pixel(ghost.x+ghost.w-1, ghost.y-1);
+    if ((p1==0xFF000000) && (p2==0xFF000000)) {
+        dirs |= HAUT;
+    } // if
+    // BAS
+    p1 = _maze.pixel(ghost.x, ghost.y+ghost.h);
+    p2 = _maze.pixel(ghost.x+ghost.w-1, ghost.y+ghost.h);
+    if ((p1==0xFF000000) && (p2==0xFF000000)) {
+        dirs |= BAS;
+    } // if
+    return dirs;
+}

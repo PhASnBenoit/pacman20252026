@@ -3,11 +3,13 @@
 
 #include <QSharedMemory>
 #include <QObject>
+#include <QDebug>
 #include "commun.h"
 
-#define MAX_GHOSTS 6
+#define KEY "pacman"
+
 typedef struct s_zdc {
-    T_GENERAL general;
+    T_JEU jeu;
     T_PACMAN pacman;
     T_GHOST ghosts[MAX_GHOSTS];
 } T_ZDC;
@@ -18,20 +20,20 @@ class CZDC : public QSharedMemory
 public:
     CZDC();
     ~CZDC();
-    void clear();
     T_PACMAN getPacman();
-    T_GHOST getGhostNb(int nb);
-    T_GENERAL getGeneral();
+    T_GHOST getGhostNo(int no);
+    T_JEU getJeu();
     void setPacman(T_PACMAN pac);
-    void setGhostNb(int nb, T_GHOST ghost);
-    void setGeneral(T_GENERAL gen);
-    int init();
+    void setGhostNo(int no, T_GHOST ghost);
+    void setJeu(T_JEU jeu);
+    int init(bool capp);
+    void setDirAskedPacman(E_DIRECTIONS dir);
 
 private:
     T_ZDC *_data;
 
 signals:
-    void sig_erreur(int err);
+    void sig_erreur(QString err);
 };
 
 #endif // CZDC_H
