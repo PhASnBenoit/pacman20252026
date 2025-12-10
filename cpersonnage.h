@@ -13,8 +13,7 @@ class CPersonnage : public QObject
 public:
     explicit CPersonnage(QObject *parent = nullptr);
     ~CPersonnage();
-    int getDirsP(T_PACMAN pac);
-    int getDirsG(T_GHOST ghost);
+    int getDirs(int x, int y, int w, int h);
 
 protected:
     int _num;

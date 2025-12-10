@@ -23,7 +23,7 @@ T_GHOST CSettings::getGhost(int no)
     if ( (no<0) || (no>=MAX_GHOSTS)) // TODO A améliorer
         return ghost;
     no++;
-    ghost.w = value("GHOSTS/GHOST_WITDH", 0).toInt();
+    ghost.w = value("GHOSTS/GHOST_WIDTH", 0).toInt();
     ghost.h = value("GHOSTS/GHOST_HEIGHT", 0).toInt();
     QString name="GHOST"+QString::number(no)+"_";
     ghost.x = value("GHOSTS/"+name+"POS_DEP_X", 184).toInt();
@@ -38,7 +38,7 @@ T_JEU CSettings::getJeu()
 {
     T_JEU jeu;
     jeu.nbGhosts = value("JEU/NB_GHOSTS", 0).toInt();
-    jeu.vitesse = value("JEU/VITESSE", 2000).toInt();
+    jeu.vitesse = value("JEU/VITESSE", 200).toInt();
     jeu.maze_w = value("JEU/MAZE_WIDTH", 0).toInt();
     jeu.maze_h = value("JEU/MAZE_HEIGHT", 0).toInt();
     return jeu;

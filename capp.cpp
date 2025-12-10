@@ -23,6 +23,7 @@ CApp::CApp(QObject *parent, int argc, char *argv[])
     // création et départ du pacman
     _pacman = new CPacman(); // TODO réglages par défaut
     _thPacman = new QThread();
+    _thPacman->setObjectName("pacman");
     _pacman->moveToThread(_thPacman);
     connect(_thPacman, &QThread::started, _pacman, &CPacman::on_go);
     connect(_pacman, &CPacman::sig_finished, _thPacman, &QThread::quit);
@@ -37,6 +38,7 @@ CApp::CApp(QObject *parent, int argc, char *argv[])
         ghost = new CGhost(i);// TODO Réglage par défaut
         _ghosts.append(ghost);
         _thGhost = new QThread();
+        _thGhost->setObjectName("ghost_"+QString::number(i+1));
         ghost->moveToThread(_thGhost);
         _thGhosts.append(_thGhost);
         connect(_thGhost, &QThread::started, ghost, &CGhost::on_go);

@@ -23,6 +23,7 @@ public:
     T_PACMAN getPacman();
     T_GHOST getGhostNo(int no);
     T_JEU getJeu();
+    QList<int> getXYTousLesGhosts();
     void setPacman(T_PACMAN pac);
     void setGhostNo(int no, T_GHOST ghost);
     void setJeu(T_JEU jeu);

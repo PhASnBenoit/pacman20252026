@@ -82,6 +82,19 @@ T_JEU CZDC::getJeu()
     return jeu;
 }
 
+QList<int> CZDC::getXYTousLesGhosts()
+{
+    QList<int> xy;
+
+    lock();
+        for (int i=0 ; i<_data->jeu.nbGhosts ; i++) {
+            xy.append(_data->ghosts[i].x);
+            xy.append(_data->ghosts[i].y);
+        } // for
+    unlock();
+    return xy;
+}
+
 void CZDC::setPacman(T_PACMAN pac)
 {
     lock();

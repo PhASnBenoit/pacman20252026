@@ -31,7 +31,7 @@ void CPacman::on_go()
     T_PACMAN pac = _zdc->getPacman();
     T_JEU jeu = _zdc->getJeu();
 
-        possibleDirs = getDirsP(pac);
+        possibleDirs = getDirs(pac.x, pac.y, pac.w, pac.h);
         // est ce que dirAsked est possible
         if (possibleDirs & pac.dirAsked)
             if (pac.dir != pac.dirAsked) {

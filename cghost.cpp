@@ -38,16 +38,28 @@ void CGhost::on_go()
     E_DIRECTIONS dir;
     T_GHOST ghost = _zdc->getGhostNo(_no);
     T_JEU jeu = _zdc->getJeu();
-    possibleDirs = getDirsG(ghost); // dirs possible
-    if (!(possibleDirs & ghost.dir)) { // si pas compatible avec dir actuelle
-        do {
-            dir=getRandomDirection(); // dir aléatoire
-            if (dir&possibleDirs) {
-                ghost.dir = dir;
-                break;
-            } // if
-        } while(1); // dangereux
-    } // if
+    possibleDirs = getDirs(ghost.x, ghost.y, ghost.w, ghost.h); // dirs possible
+    switch (ghost.dir) {
+        case FIXE:break;
+        case DROITE: possibleDirs &= ~GAUCHE; break;
+        case GAUCHE: possibleDirs &= ~DROITE; break;
+        case HAUT: possibleDirs &= ~BAS; break;
+        case BAS: possibleDirs &= ~HAUT; break;
+    } // sw
+    // compte le nombre de bits à 1
+    int nbBits=0;
+    if (possibleDirs&DROITE) nbBits++;
+    if (possibleDirs&GAUCHE) nbBits++;
+    if (possibleDirs&HAUT) nbBits++;
+    if (possibleDirs&BAS) nbBits++;
+    do {
+        dir=getRandomDirection(); // dir aléatoire
+        if (dir&possibleDirs) {
+            ghost.dir = dir;
+            break;
+        } // if
+    } while(1); // dangereux
+
     // avancer le ghost
     switch(ghost.dir) {
     case FIXE: break;
@@ -72,6 +84,7 @@ void CGhost::on_go()
     _zdc->setGhostNo(_no, ghost);
     QThread::msleep(jeu.vitesse); // pour ne pas aller trop vite
     if (!_running) {
+        qDebug() << "FIN DU GHOST !";
         delete _zdc;
         emit sig_finished();
         return;
