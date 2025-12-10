@@ -2,27 +2,14 @@
 
 CPacman::CPacman(QObject *parent)
     : CPersonnage{parent}
-    , _running(true)     // liste d’initialisation
 {
     qDebug() << "CPacman::CPacman: new CZDC";
-    _zdc = new CZDC();
-    if (_zdc->init(false)) { // attach à la ZDC
-        qDebug() << "CPacman::CPacman: Erreur ZDC";
-        delete _zdc;
-        emit sig_finished();
-        return;
-    } // if
+    connect(_zdc, &CZDC::sig_erreur, this, &CPacman::on_sig_erreurFromZDC);
     connect(this, &CPacman::sig_refresh, this, &CPacman::on_go);
 }
 
 CPacman::~CPacman()
 {
-//    delete _zdc;
-}
-
-void CPacman::stop()
-{
-    _running = false;
 }
 
 void CPacman::on_go()
@@ -68,5 +55,10 @@ void CPacman::on_go()
             return;
         } // if
         emit sig_refresh();
+}
+
+void CPacman::on_sig_erreurFromZDC(QString txt)
+{
+    emit sig_erreur(txt);
 }
 

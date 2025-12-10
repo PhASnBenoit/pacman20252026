@@ -3,14 +3,26 @@
 CPersonnage::CPersonnage(QObject *parent)
     : QObject{parent}
 {
-    int res = _maze.load("pacman-maze.png");
+    _zdc = new CZDC();
+    if (_zdc->init(false)) { // attach à la ZDC
+        qDebug() << "CPersonnage::CPersonnage: Erreur ZDC";
+        delete _zdc;
+        emit sig_finished();
+        return;
+    } // if
+    int res = _maze.load("../pacman_img/pacman-maze.png");
     if (!res)
         return;
 }
 
 CPersonnage::~CPersonnage()
 {
-  //  delete _zdc;
+    delete _zdc;
+}
+
+void CPersonnage::stop()
+{
+    _running = false;
 }
 
 int CPersonnage::getDirs(int x, int y, int w, int h)

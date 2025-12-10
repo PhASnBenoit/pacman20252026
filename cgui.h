@@ -30,7 +30,7 @@ private:
     CZDC *_zdc;
     QTimer _timerFw;
     QImage _maze;
-    E_DIRECTIONS _dirMem;
+    E_DIRS _dirMem;
     QList<QLabel *> _laGhosts;
     virtual void keyPressEvent(QKeyEvent *e);
 

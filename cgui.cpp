@@ -18,7 +18,7 @@ CGUI::CGUI(CZDC *zdc, QWidget *parent)
     for (int i=0 ; i<_zdc->getJeu().nbGhosts ; i++) {
         ghost = _zdc->getGhostNo(i);
         // création des QLabels des Ghosts
-        filenameGhost = QString(ghost.image);
+        filenameGhost = "../pacman_img/"+QString(ghost.image);
         iGhost.load(filenameGhost);
         laGhost = new QLabel(this);
         laGhost->setObjectName("laGhost"+QString::number(i+1));
@@ -29,7 +29,7 @@ CGUI::CGUI(CZDC *zdc, QWidget *parent)
     } // for
 
     connect(&_timerFw, &QTimer::timeout, this, &CGUI::on_timeout);
-    _timerFw.start(150);
+    _timerFw.start(60);
 }
 
 CGUI::~CGUI()
@@ -52,12 +52,12 @@ void CGUI::on_timeout()
     // PACMAN
     T_PACMAN pac = _zdc->getPacman();
     if ((pac.dir == DROITE) && (_dirMem != pac.dir)) {
-        ui->laPacman->setPixmap(QPixmap("super-mario-droite.png"));
+        ui->laPacman->setPixmap(QPixmap("../pacman_img/super-mario-droite.png"));
         _dirMem = pac.dir;
     } // if
     if ((pac.dir == GAUCHE) && (_dirMem != pac.dir)) {
         _dirMem = pac.dir;
-        ui->laPacman->setPixmap(QPixmap("super-mario-gauche.png"));
+        ui->laPacman->setPixmap(QPixmap("../pacman_img/super-mario-gauche.png"));
     } // if
     ui->laPacman->setGeometry(pac.x, pac.y, pac.w, pac.h);
 

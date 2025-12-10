@@ -28,7 +28,7 @@ public:
     void setGhostNo(int no, T_GHOST ghost);
     void setJeu(T_JEU jeu);
     int init(bool capp);
-    void setDirAskedPacman(E_DIRECTIONS dir);
+    void setDirAskedPacman(E_DIRS dir);
 
 private:
     T_ZDC *_data;

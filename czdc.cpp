@@ -43,7 +43,7 @@ int CZDC::init(bool capp)
     return 0;
 }
 
-void CZDC::setDirAskedPacman(E_DIRECTIONS dir)
+void CZDC::setDirAskedPacman(E_DIRS dir)
 {
     lock();
         _data->pacman.dirAsked = dir;

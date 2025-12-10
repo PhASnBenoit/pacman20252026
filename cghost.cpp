@@ -2,41 +2,27 @@
 
 CGhost::CGhost(int no, QObject *parent)
     : CPersonnage{parent}
-    , _running(true), _dir(HAUT)     // ⭐️ liste d’initialisation
 {
-    _zdc = new CZDC();
+    _num = no;
     connect(_zdc, &CZDC::sig_erreur, this, &CGhost::on_sig_erreurFromZDC);
-    if (_zdc->init(false)) { // attach à la ZDC
-        qDebug() << "CGhost::CGhost: Erreur ZDC";
-        delete _zdc;
-        emit sig_finished();
-        return;
-    } // if
     connect(this, &CGhost::sig_refresh, this, &CGhost::on_go);
-    _no = no;
 }
 
 CGhost::~CGhost()
 {
-    delete _zdc;
 }
 
-void CGhost::stop()
-{
-    _running = false;
-}
-
-E_DIRECTIONS CGhost::getRandomDirection()
+E_DIRS CGhost::getRandomDirection()
 {
     int value = QRandomGenerator::global()->bounded(4);
-    return (E_DIRECTIONS)(1<<value);
+    return (E_DIRS)(1<<value);
 }
 
 void CGhost::on_go()
 {
     int possibleDirs;
-    E_DIRECTIONS dir;
-    T_GHOST ghost = _zdc->getGhostNo(_no);
+    E_DIRS dir;
+    T_GHOST ghost = _zdc->getGhostNo(_num);
     T_JEU jeu = _zdc->getJeu();
     possibleDirs = getDirs(ghost.x, ghost.y, ghost.w, ghost.h); // dirs possible
     switch (ghost.dir) {
@@ -46,12 +32,12 @@ void CGhost::on_go()
         case HAUT: possibleDirs &= ~BAS; break;
         case BAS: possibleDirs &= ~HAUT; break;
     } // sw
-    // compte le nombre de bits à 1
-    int nbBits=0;
-    if (possibleDirs&DROITE) nbBits++;
-    if (possibleDirs&GAUCHE) nbBits++;
-    if (possibleDirs&HAUT) nbBits++;
-    if (possibleDirs&BAS) nbBits++;
+    // // compte le nombre de bits à 1
+    // int nbBits=0;
+    // if (possibleDirs&DROITE) nbBits++;
+    // if (possibleDirs&GAUCHE) nbBits++;
+    // if (possibleDirs&HAUT) nbBits++;
+    // if (possibleDirs&BAS) nbBits++;
     do {
         dir=getRandomDirection(); // dir aléatoire
         if (dir&possibleDirs) {
@@ -65,23 +51,19 @@ void CGhost::on_go()
     case FIXE: break;
     case DROITE:
         ghost.x+=1;
-        if ( ghost.x >= (jeu.maze_w-ghost.w)) // changement de bord
-            ghost.x = 0;
+        if ( ghost.x >= (jeu.maze_w-ghost.w-1)) // changement de bord
+            ghost.x = 1;
         break;
     case GAUCHE:
         ghost.x-=1;
-        if (ghost.x == 0) // changement de bord
-            ghost.x = jeu.maze_w-ghost.w;
+        if (ghost.x == 1) // changement de bord
+            ghost.x = jeu.maze_w-ghost.w-1;
         break;
-    case HAUT:
-        ghost.y-=1;
-        break;
-    case BAS:
-        ghost.y+=1;
-        break;
+    case HAUT: ghost.y-=1; break;
+    case BAS:  ghost.y+=1; break;
     } // sw
 //    qDebug() << "Ghost : " << ghost.x << ghost.y;
-    _zdc->setGhostNo(_no, ghost);
+    _zdc->setGhostNo(_num, ghost);
     QThread::msleep(jeu.vitesse); // pour ne pas aller trop vite
     if (!_running) {
         qDebug() << "FIN DU GHOST !";

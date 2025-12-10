@@ -14,20 +14,16 @@ class CPacman : public CPersonnage
 public:
     explicit CPacman(QObject *parent = nullptr);
     ~CPacman();
-    void stop();
 
 private:
-    E_DIRECTIONS _dirMem;  // mémoire dir précédent
-    std::atomic_bool _running; // thread safe
-    CZDC *_zdc;
+    E_DIRS _dirMem;  // mémoire dir précédent
 
 public slots:
-    void on_go();
+    void on_go() override;
+    void on_sig_erreurFromZDC(QString txt);
 
 signals:
-    void sig_erreur(QString txt);
-    void sig_finished();
-    void sig_refresh();
+
 };
 
 #endif // CPACMAN_H

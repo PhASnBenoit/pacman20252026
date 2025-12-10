@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>492</width>
-    <height>409</height>
+    <height>421</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>super-mario-droite.png</pixmap>
+     <pixmap>../pacman_img/super-mario-droite.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -46,7 +46,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>pacman-maze.png</pixmap>
+     <pixmap>../pacman_img/pacman-maze.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
